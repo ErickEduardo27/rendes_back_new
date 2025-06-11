@@ -23,6 +23,19 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:99',
+    'http://10.0.54.88:5173',
+    'http://10.0.54.88',
+    'http://10.0.54.88:80',
+    'http://10.0.54.105:8080',
+    'http://10.0.54.105:90',
+    'http://apps.essalud.gob.pe',
+    'https://apps.essalud.gob.pe',
+    'http://10.0.54.68:90',
+    'http://10.0.54.88:100',
+    'http://192.168.1.12:100'
+)
 
 # Application definition
 
@@ -32,11 +45,13 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'corsheaders',
     'django.contrib.staticfiles',
     'appAsistencial.apps.appAsistencialConfig',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # 🔥 DEBE ir al inicio
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
