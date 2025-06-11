@@ -36,8 +36,7 @@ RUN pip install djangorestframework \
     Pillow \
     django-cleanup \
     python-dotenv \
-    openpyxl\
-    xlrd
+    openpyxl
 
 # Copia tu aplicación al directorio de trabajo
 COPY ./ ./
