@@ -1,7 +1,10 @@
 from appAsistencial.models.models import usuario,perfil,ipress, usuarioIpress,periodoIpress,pacientes,etiologia,pacientesDialisis,estados
-from appAsistencial.serializers.serializers import perfilSerializer,usuarioSerializer,ipressSerializer,usuarioIpressSerializer,periodoIpressSerializer,pacienteSerializer,etiologiaSerializer,pacientesDialisisSerializer
+from appAsistencial.serializers.serializers import perfilSerializer,usuarioSerializer,ipressSerializer,usuarioIpressSerializer,periodoIpressSerializer,pacienteSerializer,etiologiaSerializer,pacientesDialisisSerializer, CustomLoginSerializer
 from rest_framework import permissions, viewsets, filters
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class usuarioViewSet(viewsets.ModelViewSet):
@@ -16,7 +19,7 @@ class perfilViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 class ipressViewSet(viewsets.ModelViewSet):
-    queryset = ipress.objects.all()
+    queryset = ipress.objects.all().order_by('-id_ipress')
     serializer_class = ipressSerializer  # Asigna la clase serializadora correspondient
     permission_classes = [permissions.IsAuthenticated]    
     search_fields = ['estado']
@@ -124,3 +127,22 @@ class pacientesDialisisViewSet(viewsets.ModelViewSet):
         if id_paciente:
             queryset = queryset.filter(id_paciente=id_paciente)
         return queryset
+
+
+class CustomLoginView(APIView):
+    def post(self, request):
+        serializer = CustomLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+class UsuarioMeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_id = request.user.id  # Este es `id_usuario` por la propiedad que creamos
+        user = usuario.objects.get(id_usuario=user_id)
+        serializer = usuarioSerializer(user)
+        return Response(serializer.data)

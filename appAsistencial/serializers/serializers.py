@@ -10,7 +10,7 @@ class usuarioSerializer(serializers.ModelSerializer):
     datosPerfil = perfilSerializer(source="id_perfil", read_only=True)
     class Meta:
         model = usuario
-        fields = '__all__' 
+        exclude = ['id_perfil'] 
 
 class modalidadesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -86,3 +86,24 @@ class pacientesDialisisSerializer(serializers.ModelSerializer):
     class Meta:
         model = pacientesDialisis
         fields = '__all__'
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+
+class CustomLoginSerializer(serializers.Serializer):
+    usuario = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        username = attrs.get('usuario')
+        password = attrs.get('password')
+
+        user = usuario.objects.filter(usuario=username, clave=password).first()
+        if not user:
+            raise serializers.ValidationError("Credenciales inválidas")
+
+        refresh = RefreshToken.for_user(user)
+        return {
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+        }

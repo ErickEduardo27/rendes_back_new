@@ -22,9 +22,11 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 13
 }
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:99',
+    'http://localhost:5173',
     'http://10.0.54.88:5173',
     'http://10.0.54.88',
     'http://10.0.54.88:80',
@@ -95,6 +97,7 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
 
 
 # Password validation
