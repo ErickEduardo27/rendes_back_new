@@ -22,9 +22,11 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 13
 }
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:99',
+    'http://localhost:5173',
     'http://10.0.54.88:5173',
     'http://10.0.54.88',
     'http://10.0.54.88:80',
@@ -88,10 +90,10 @@ WSGI_APPLICATION = 'back_rendes.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB'),
+        'NAME': 'new-db-ess',
         'USER': 'postgres',
-        'PASSWORD': '3ss4lud2#',
-        'HOST': '192.168.0.92',
+        'PASSWORD': '1234',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }

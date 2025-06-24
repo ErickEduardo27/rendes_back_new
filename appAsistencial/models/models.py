@@ -32,6 +32,10 @@ class usuario(models.Model):
     class Meta:
         db_table = 'rd_usuarios'
 
+    @property
+    def id(self):
+        return self.id_usuario
+
     def __str__(self):
         return (self.usuario) 
 

@@ -4,6 +4,7 @@ from rest_framework_simplejwt import views as jwt_views
 from rest_framework import routers, permissions
 from appAsistencial.views import views as viewsAsis
 
+
 router = routers.DefaultRouter() 
 router.register(r'usuario', viewsAsis.usuarioViewSet)
 router.register(r'perfil', viewsAsis.perfilViewSet)
@@ -17,7 +18,12 @@ router.register(r'pacientesDialisis', viewsAsis.pacientesDialisisViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+
+    path('api/token/', viewsAsis.CustomLoginView.as_view(), name='token_obtain_pair'),
+    path('api/me/', viewsAsis.UsuarioMeView.as_view(), name='me'),
+
+    
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('', include(router.urls)), 
 ]
+    
