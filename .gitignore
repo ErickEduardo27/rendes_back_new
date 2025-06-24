@@ -3,6 +3,3 @@ Dockerfile
 
 # Ignorar Jenkinsfile
 Jenkinsfile
-
-# Ignorar cualquier archivo que contenga "requirements" en su nombre
-requirements*
