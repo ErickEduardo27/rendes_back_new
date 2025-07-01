@@ -124,11 +124,11 @@ WSGI_APPLICATION = 'back_rendes.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'test-db',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': os.environ.get('DB'), 
         'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
+        'PASSWORD': '3ss4lud2#',
+        'HOST': '192.168.0.92',
         'PORT': '5432',
     }
 }
