@@ -1,10 +1,11 @@
-from appAsistencial.models.models import usuario,perfil,ipress, usuarioIpress,periodoIpress,pacientes,etiologia,pacientesDialisis,estados
-from appAsistencial.serializers.serializers import perfilSerializer,usuarioSerializer,ipressSerializer,usuarioIpressSerializer,periodoIpressSerializer,pacienteSerializer,etiologiaSerializer,pacientesDialisisSerializer, CustomLoginSerializer
+from appAsistencial.models import usuario,perfil,ipress, usuarioIpress,periodoIpress,pacientes,etiologia,pacientesDialisis,estados
+from appAsistencial.serializers.serializers import perfilSerializer,usuarioSerializer,ipressSerializer,usuarioIpressSerializer,periodoIpressSerializer,pacienteSerializer,etiologiaSerializer,pacientesDialisisSerializer, CustomLoginSerializer, UserRegistrationSerializer
 from rest_framework import permissions, viewsets, filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 
 
 class usuarioViewSet(viewsets.ModelViewSet):
@@ -142,7 +143,26 @@ class UsuarioMeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user_id = request.user.id  # Este es `id_usuario` por la propiedad que creamos
-        user = usuario.objects.get(id_usuario=user_id)
-        serializer = usuarioSerializer(user)
-        return Response(serializer.data)
+        try:
+
+            user_autenticado = request.user
+            
+            serializer = usuarioSerializer(user_autenticado)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"detail": f"Error al obtener datos del usuario: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+
+# --- NUEVA VISTA PARA REGISTRO DE USUARIOS ---
+class UserRegistrationView(APIView):
+    permission_classes = [AllowAny] # Permite que usuarios no autenticados se registren
+
+    def post(self, request):
+        serializer = UserRegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save() 
+            
+            return Response(usuarioSerializer(user).data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -1,4 +1,5 @@
 
+from datetime import timedelta
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -18,10 +19,41 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['10.0.52.64', '.localhost','10.0.54.88','127.0.0.1','appsqa.essalud.gob.pe']
 
+AUTH_USER_MODEL = 'appAsistencial.usuario'
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),   
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'UPDATE_LAST_LOGIN': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY, 
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'JWK_URL': None,
+    'LEEWAY': 0,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id_usuario',  
+    'USER_ID_CLAIM': 'user_id',     
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'JTI_CLAIM': 'jti',
+
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+}
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 13
 }
@@ -50,6 +82,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.staticfiles',
     'appAsistencial.apps.appAsistencialConfig',
+    'rest_framework', # Asegúrate de que DRF esté aquí
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -91,10 +125,10 @@ WSGI_APPLICATION = 'back_rendes.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB'),
+        'NAME': 'test-db',
         'USER': 'postgres',
-        'PASSWORD': '3ss4lud2#',
-        'HOST': '192.168.0.92',
+        'PASSWORD': '1234',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
