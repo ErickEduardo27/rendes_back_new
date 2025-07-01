@@ -10,7 +10,6 @@ from rest_framework import status
 class usuarioViewSet(viewsets.ModelViewSet):
     queryset = usuario.objects.all()
     serializer_class = usuarioSerializer
-    permission_classes = [permissions.IsAuthenticated]
     search_fields = ['=usuario']
 
 class perfilViewSet(viewsets.ModelViewSet):
@@ -139,7 +138,7 @@ class CustomLoginView(APIView):
 
 
 class UsuarioMeView(APIView):
-    permission_classes = [IsAuthenticated]
+    """ permission_classes = [IsAuthenticated] """
 
     def get(self, request):
         user_id = request.user.id  # Este es `id_usuario` por la propiedad que creamos

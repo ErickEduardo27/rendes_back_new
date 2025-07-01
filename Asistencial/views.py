@@ -1373,8 +1373,7 @@ class usuarioViewSet(viewsets.ModelViewSet):
     API endpoint that allows groups to be viewed or edited.
     """
     queryset = usuario.objects.all()
-    serializer_class = usuarioSerializer  
-    permission_classes = [permissions.IsAuthenticated]    
+    serializer_class = usuarioSerializer 
     filter_backends = [filters.SearchFilter]
     search_fields = ['=usuario']
 
