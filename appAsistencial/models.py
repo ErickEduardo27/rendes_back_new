@@ -56,7 +56,7 @@ class usuario(AbstractBaseUser, PermissionsMixin):
     id_perfil = models.ForeignKey(perfil, on_delete=models.CASCADE, db_column='id_perfil',null=True,blank=True)   
     documento =models.CharField(max_length=15, unique=True)
     nombre =models.CharField(max_length=50)
-    usuario =models.CharField(max_length=15, unique=True)
+    usuario =models.CharField(max_length=30, unique=True)
     estado =models.CharField(max_length=15)
 
 
