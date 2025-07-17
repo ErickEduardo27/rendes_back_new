@@ -72,10 +72,8 @@ class periodoIpressViewSet(viewsets.ModelViewSet):
 class pacienteViewSet(viewsets.ModelViewSet):
     queryset = pacientes.objects.all()
     serializer_class = pacienteSerializer
+    pagination_class = None
     
-    permission_classes = [permissions.IsAuthenticated]    
-    search_fields = ['=id_paciente']
-
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
