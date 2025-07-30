@@ -8,7 +8,7 @@ from appAsistencial.views import views as viewsAsis
 router = routers.DefaultRouter() 
 router.register(r'usuarios', viewsAsis.usuarioViewSet)
 router.register(r'perfiles', viewsAsis.perfilViewSet)
-router.register(r'pacientes', viewsAsis.pacienteViewSet)
+router.register(r'pacientes', viewsAsis.pacienteViewSet, basename = 'pacientes')
 router.register(r'ipress', viewsAsis.ipressViewSet)
 router.register(r'periodos', viewsAsis.periodosViewSet)
 router.register(r'periodoIpress', viewsAsis.periodoIpressViewSet)
