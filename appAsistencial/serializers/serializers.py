@@ -1,4 +1,4 @@
-from appAsistencial.models import perfil,usuario,modalidades,red,ipress,pacientes,usuarioIpress,etiologia,pacientesDialisis,ubigeo,tipoPacientes,periodos,periodoIpress,estados
+from appAsistencial.models import perfil,usuario,modalidades,red,Ipress,pacientes,usuarioIpress,etiologia,pacientesDialisis,ubigeo,tipoPacientes,periodoIpress,estados,Periodos,unidadesActuales,morbilidadesHospitalarias,eventosAccesosVasculares,vacunaciones,resultadosClinicos
 from rest_framework import serializers
 from django.contrib.auth import authenticate, get_user_model
 
@@ -25,6 +25,10 @@ class ubigeoSerializer(serializers.ModelSerializer):
         model = ubigeo
         fields = '__all__'
 
+class PeriodosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Periodos
+        fields = '__all__'
 
 class redSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,7 +40,7 @@ class ipressSerializer(serializers.ModelSerializer):
     datosUbigeo = ubigeoSerializer(source="id_ubigeo", read_only=True)
     datosRed = redSerializer(source="id_red", read_only=True)
     class Meta:
-        model = ipress
+        model = Ipress
         fields = '__all__'
 
 class pacienteSerializer(serializers.ModelSerializer):
@@ -51,7 +55,7 @@ class tipoPacientesSerializer(serializers.ModelSerializer):
 
 class periodoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = periodos
+        model = Periodos
         fields = '__all__'
 
 class usuarioIpressSerializer(serializers.ModelSerializer):
@@ -64,6 +68,12 @@ class usuarioIpressSerializer(serializers.ModelSerializer):
 class periodoIpressSerializer(serializers.ModelSerializer):
     datosPeriodo = periodoSerializer(source="id_periodo", read_only=True)
     datosIpress = ipressSerializer(source="id_ipress", read_only=True)
+    ipress = serializers.CharField(source='ipress.ipress', read_only=True)  # nombre visible
+    id_ipress = serializers.PrimaryKeyRelatedField(queryset=Ipress.objects.all(), source="ipress",
+    required=False )
+    """ periodo = serializers.CharField(source='ipress.nombre', read_only=True)  # nombre visible
+    id_periodo = serializers.PrimaryKeyRelatedField(queryset=Ipress.objects.all(), source="ipress",
+    required=False ) """
     class Meta:
         model = periodoIpress
         fields = '__all__'
@@ -115,7 +125,44 @@ class CustomLoginSerializer(serializers.Serializer):
             'access': str(refresh.access_token),
             'refresh': str(refresh),
         }
-    
+
+class unidadesActualesSerializer(serializers.ModelSerializer):
+    datosEstado = estadoSerializer(source="id_estado", read_only=True)
+    datosPaciente = pacienteSerializer(source="id_paciente", read_only=True)
+    datosUsuarioIpress = usuarioIpressSerializer(source="id_usuario_ipress", read_only=True)
+    datosRed = redSerializer(source="id_red", read_only=True)
+    class Meta:
+        model = unidadesActuales
+        fields = '__all__'
+
+class eventosAccesosVascularesSerializer(serializers.ModelSerializer):
+    datosEstado = estadoSerializer(source="id_estado", read_only=True)
+    datosPaciente = pacienteSerializer(source="id_paciente", read_only=True)
+    datosUsuarioIpress = usuarioIpressSerializer(source="id_usuario_ipress", read_only=True)
+    class Meta:
+        model = eventosAccesosVasculares
+        fields = '__all__'
+
+class morbilidadesHospitalariasSerializer(serializers.ModelSerializer):
+    datosEstado = estadoSerializer(source="id_estado", read_only=True)
+    datosPaciente = pacienteSerializer(source="id_paciente", read_only=True)
+    datosUsuarioIpress = usuarioIpressSerializer(source="id_usuario_ipress", read_only=True)
+    class Meta:
+        model = morbilidadesHospitalarias
+        fields = '__all__'
+
+class vacunacionesSerializer(serializers.ModelSerializer):
+    datosRed = redSerializer(source="id_red", read_only=True)
+    class Meta:
+        model = vacunaciones
+        fields = '__all__'
+
+class resultadosClinicosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = resultadosClinicos
+        fields = '__all__'
+
+
 
 # --- NUEVO SERIALIZER PARA REGISTRO DE USUARIOS ---
 class UserRegistrationSerializer(serializers.ModelSerializer):

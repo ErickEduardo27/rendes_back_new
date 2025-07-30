@@ -1,11 +1,13 @@
-from appAsistencial.models import usuario,perfil,ipress, usuarioIpress,periodoIpress,pacientes,etiologia,pacientesDialisis,estados
-from appAsistencial.serializers.serializers import perfilSerializer,usuarioSerializer,ipressSerializer,usuarioIpressSerializer,periodoIpressSerializer,pacienteSerializer,etiologiaSerializer,pacientesDialisisSerializer, CustomLoginSerializer, UserRegistrationSerializer
+from appAsistencial.models import usuario,perfil,Ipress, usuarioIpress,periodoIpress,pacientes,etiologia,pacientesDialisis,estados,Periodos,unidadesActuales,morbilidadesHospitalarias,eventosAccesosVasculares,vacunaciones,resultadosClinicos
+from appAsistencial.serializers.serializers import perfilSerializer,usuarioSerializer,ipressSerializer,usuarioIpressSerializer,periodoIpressSerializer,pacienteSerializer,etiologiaSerializer,pacientesDialisisSerializer, CustomLoginSerializer, UserRegistrationSerializer,periodoSerializer,unidadesActualesSerializer,morbilidadesHospitalariasSerializer,eventosAccesosVascularesSerializer,vacunacionesSerializer,resultadosClinicosSerializer
 from rest_framework import permissions, viewsets, filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
+from django.db import connection
+from django.http import JsonResponse
 
 
 class usuarioViewSet(viewsets.ModelViewSet):
@@ -19,10 +21,11 @@ class perfilViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 class ipressViewSet(viewsets.ModelViewSet):
-    queryset = ipress.objects.all().order_by('-id_ipress')
+    queryset = Ipress.objects.all().order_by('-id_ipress')
     serializer_class = ipressSerializer  # Asigna la clase serializadora correspondient
     permission_classes = [permissions.IsAuthenticated]    
     search_fields = ['estado']
+    pagination_class = None
 
 class indexIpressViewSet(viewsets.ModelViewSet):
     serializer_class = ipressSerializer
@@ -30,7 +33,7 @@ class indexIpressViewSet(viewsets.ModelViewSet):
     search_fields = ['ipress','estado']
 
     def get_queryset(self):
-        queryset = ipress.objects.all()
+        queryset = Ipress.objects.all()
         ipressParam = self.request.query_params.get('ipress')
         estado = self.request.query_params.get('estado')
         # Aplicar filtros
@@ -52,7 +55,8 @@ class periodoIpressViewSet(viewsets.ModelViewSet):
     serializer_class = periodoIpressSerializer  
     permission_classes = [permissions.IsAuthenticated]    
     search_fields = ['=id_']
-    def get_queryset(self):
+    pagination_class= None
+    """ def get_queryset(self):
         queryset = ipress.objects.all()
         id_ipress = self.request.query_params.get('id_ipress')
         id_periodo = self.request.query_params.get('id_periodo')
@@ -67,12 +71,11 @@ class periodoIpressViewSet(viewsets.ModelViewSet):
         # Tomar una rebanada del queryset
         queryset = queryset[:100]
 
-        return queryset
+        return queryset """
 
 class pacienteViewSet(viewsets.ModelViewSet):
     queryset = pacientes.objects.all()
     serializer_class = pacienteSerializer
-    pagination_class = None
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -102,6 +105,11 @@ class usuarioIpressFilterViewSet(viewsets.ModelViewSet):
         if id_usuario is not None:
             queryset = queryset.filter(id_usuario=id_usuario)
         return queryset
+
+class periodosViewSet(viewsets.ModelViewSet):
+    queryset = Periodos.objects.all()
+    serializer_class = periodoSerializer 
+    pagination_class = None
 
 class etiologiaViewSet(viewsets.ModelViewSet):
     queryset = etiologia.objects.all()
@@ -163,3 +171,55 @@ class UserRegistrationView(APIView):
             
             return Response(usuarioSerializer(user).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def resumen_registros(request, id_ipress=None, id_periodo=None):
+    # Convertir "null" (string) a None
+    if id_ipress == "null" or id_ipress is None:
+        id_ipress_int = None
+    else:
+        try:
+            id_ipress_int = int(id_ipress)
+        except ValueError:
+            return JsonResponse({"error": "ID IPRESS inválido"}, status=400)
+
+    if id_periodo == "null" or id_periodo is None:
+        id_periodo_int = None
+    else:
+        try:
+            id_periodo_int = int(id_periodo)
+        except ValueError:
+            return JsonResponse({"error": "ID PERIODO inválido"}, status=400)
+
+    # Ejecutar función en base de datos
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM rendes_resumen_registros(%s, %s)", [id_ipress_int, id_periodo_int])
+        datos = [fila[0] for fila in cursor.fetchall()]
+
+    return JsonResponse(datos, safe=False)
+
+
+class vacunacionesViewSet(viewsets.ModelViewSet):
+    queryset = vacunaciones.objects.all()
+    serializer_class = vacunacionesSerializer
+
+class resultadosClinicosViewSet(viewsets.ModelViewSet):
+    queryset = resultadosClinicos.objects.all()
+    serializer_class = resultadosClinicosSerializer
+
+
+
+
+class unidadesActualesViewSet(viewsets.ModelViewSet):
+
+    queryset = unidadesActuales.objects.all()
+    serializer_class = unidadesActualesSerializer 
+
+class morbilidadesHospitalariasViewSet(viewsets.ModelViewSet):
+
+    queryset = morbilidadesHospitalarias.objects.all()
+    serializer_class = morbilidadesHospitalariasSerializer 
+
+class eventosAccesosVascularesViewSet(viewsets.ModelViewSet):
+    queryset = eventosAccesosVasculares.objects.all()
+    serializer_class = eventosAccesosVascularesSerializer

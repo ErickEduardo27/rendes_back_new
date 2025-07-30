@@ -77,6 +77,19 @@ def scritpFecha(request):
     # Devolver la respuesta JSON
     return JsonResponse(datos, safe=False)
 
+def resumen_registros(request, id_periodo_ipress):
+    cursor = connection.cursor()
+
+    # Llamar a la función SQL con el parámetro
+    sql = "SELECT * FROM rendes_resumen_registros(%s)"
+    cursor.execute(sql, [id_periodo_ipress])
+
+    # Cada fila es una tupla (resultado_json,), así que extraemos solo el JSON
+    filas = cursor.fetchall()
+    datos = [fila[0] for fila in filas]  # fila[0] contiene el JSON ya construido en PostgreSQL
+
+    return JsonResponse(datos, safe=False)
+
 def carga_masiva(request):
     if request.method == 'POST' and request.FILES['file']:
         file = request.FILES['file']
