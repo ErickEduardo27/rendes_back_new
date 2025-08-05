@@ -96,6 +96,12 @@ class ubigeoSerializer(serializers.ModelSerializer):
 class pacientesDialisisSerializer(serializers.ModelSerializer):
     datosEti = etiologiaSerializer(source="id_etiologia", read_only=True)
     datosEstado = estadoSerializer(source="id_estado", read_only=True)
+    # Este campo permite enviar el ID del paciente en POST
+    id_paciente = serializers.PrimaryKeyRelatedField(queryset=pacientes.objects.all())
+
+    # Este campo solo muestra el nombre del paciente en GET
+    paciente = serializers.CharField(source='id_paciente.paciente', read_only=True)
+    documento = serializers.CharField(source='id_paciente.documento', read_only=True)
     class Meta:
         model = pacientesDialisis
         fields = '__all__'

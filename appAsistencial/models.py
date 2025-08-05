@@ -201,7 +201,7 @@ class pacientes(models.Model):
     genero =models.CharField(max_length=100)
     grado_instruccion =models.CharField(max_length=100)
     id_modalidad=models.ForeignKey(modalidades, on_delete=models.PROTECT, db_column='id_modalidad')
-
+    estado =models.CharField(max_length=100)
     class Meta:
         db_table = 'rd_pacientes' 
 
@@ -240,14 +240,14 @@ class pacientesDialisis(models.Model):
 
     id_paciente_dialisis = models.AutoField(primary_key=True)
     id_paciente = models.ForeignKey(pacientes, on_delete=models.PROTECT, db_column='id_paciente')
-    id_etiologia =models.ForeignKey(etiologia, on_delete=models.PROTECT, db_column='id_etiologia')
+    """ id_etiologia =models.ForeignKey(etiologia, on_delete=models.PROTECT, db_column='id_etiologia') """
     modalidad_inicio_trr =models.CharField(max_length=20)
     fecha_inicio_trr=models.CharField(max_length=100)
     subsistema_salud=models.CharField(max_length=100)
     tipo_acceso=models.CharField(max_length=100)
     fecha_creacion_acceso=models.CharField(max_length=100)
     fecha_primer_ingreso=models.CharField(max_length=100)
-    id_usuario_ipress=models.ForeignKey(usuarioIpress, on_delete=models.PROTECT, db_column='id_usuario_ipress')
+    """ id_usuario_ipress=models.ForeignKey(usuarioIpress, on_delete=models.PROTECT, db_column='id_usuario_ipress') """
     enf_ateroesclerotica_cardiaca=models.CharField(max_length=20, blank=True, null=True)
     enf_insuficiencia_cardiaca_congestiva=models.CharField(max_length=20, blank=True, null=True)
     enf_vascular_periferica=models.CharField(max_length=20, blank=True, null=True)
@@ -257,13 +257,16 @@ class pacientesDialisis(models.Model):
     enf_hipertension=models.CharField(max_length=20, blank=True, null=True)
     enf_tuberculosis=models.CharField(max_length=20, blank=True, null=True)
     enf_otra=models.CharField(max_length=20, blank=True, null=True)
-    id_periodo_ipress = models.ForeignKey(periodoIpress, on_delete=models.PROTECT, db_column='id_periodo_ipress')
+    id_periodo_ipress = models.CharField(max_length=20, blank=True, null=True)
+    fecha_ingreso_hospital=models.CharField(max_length=20, blank=True, null=True)
+    localizacion_acceso_inicio=models.CharField(max_length=20, blank=True, null=True)
+    hospital_procedencia_trr=models.CharField(max_length=80, blank=True, null=True)
+    etiologia=models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.id_periodo_ipress} - {self.id_paciente}"
+        return f"{self.id_paciente}"
 
     class Meta:
-        unique_together = ('id_periodo_ipress', 'id_paciente','id_usuario_ipress')  # Garantiza unicidad de la combinación de campos
         db_table = 'rf_pacientes_dialisis'
 
 class unidadesActuales(models.Model):
@@ -272,17 +275,19 @@ class unidadesActuales(models.Model):
     id_periodo_ipress = models.ForeignKey(periodoIpress, on_delete=models.PROTECT, db_column='id_periodo_ipress')
     id_paciente = models.ForeignKey(pacientes, on_delete=models.PROTECT, db_column='id_paciente')
     id_red =models.ForeignKey(red, on_delete=models.PROTECT, db_column='id_red')
-    fecha_ingreso =models.CharField(max_length=20)
+    fecha_ingreso =models.CharField(max_length=20, blank=True, null=True)
     VHB=models.CharField(max_length=100, blank=True, null=True)
     VHC=models.CharField(max_length=100, blank=True, null=True)
     VHI=models.CharField(max_length=100, blank=True, null=True)
     AcHBs=models.CharField(max_length=100, blank=True, null=True)
-    tipo_acceso=models.CharField(max_length=100, blank=True, null=True)
-    motivo_cambio_acceso=models.CharField(max_length=100, blank=True, null=True)
-    fecha_creacion_acceso=models.CharField(max_length=100)
-    localizacion_acceso=models.CharField(max_length=100)
-    cambio_acceso=models.CharField(max_length=100)
-    motivo_cambio=models.CharField(max_length=100)
+    tipo_acceso_actual=models.CharField(max_length=100, blank=True, null=True)
+    fecha_creacion_acceso_actual=models.CharField(max_length=100, blank=True, null=True)
+    localizacion_acceso_actual=models.CharField(max_length=100, blank=True, null=True)
+    cambio_acceso=models.CharField(max_length=100, blank=True, null=True)
+    motivo_cambio=models.CharField(max_length=100, blank=True, null=True)
+    fecha_creacion_acceso_nuevo=models.CharField(max_length=100, blank=True, null=True)
+    tipo_acceso_nuevo=models.CharField(max_length=100, blank=True, null=True)
+    localizacion_acceso_nuevo=models.CharField(max_length=100, blank=True, null=True)
     """ id_usuario_ipress=models.ForeignKey(usuarioIpress, on_delete=models.PROTECT, db_column='id_usuario_ipress') """
     """ id_tipo_paciente=models.ForeignKey(tipoPacientes, on_delete=models.PROTECT,db_column='id_tipo_paciente') """
 
@@ -335,10 +340,10 @@ class morbilidadesHospitalarias (models.Model):
     fecha_alta=models.CharField(max_length=100, blank=True, null=True)
     fuente=models.CharField(max_length=100, blank=True, null=True)
     id_morbilidad_hospitalaria= models.AutoField(primary_key=True)
-    filtroDescripcion=models.CharField(max_length=100)
-    seleccionados=models.CharField(max_length=100)
-    fIniHos=models.CharField(max_length=100)
-    fAltHos=models.CharField(max_length=100)
+    filtroDescripcion=models.CharField(max_length=100, blank=True, null=True)
+    seleccionados=models.CharField(max_length=100, blank=True, null=True)
+    fIniHos=models.CharField(max_length=100, blank=True, null=True)
+    fAltHos=models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         db_table = 'rf_morbilidades_hospitalarias'
@@ -351,11 +356,12 @@ class vacunaciones (models.Model):
 
     id_periodo_ipress = models.ForeignKey(periodoIpress, on_delete=models.PROTECT, db_column='id_periodo_ipress')
     id_paciente = models.ForeignKey(pacientes, on_delete=models.PROTECT, db_column='id_paciente')
-    id_usuario_ipress =models.ForeignKey(usuarioIpress, on_delete=models.PROTECT, db_column='id_usuario_ipress')
+    """ id_usuario_ipress =models.ForeignKey(usuarioIpress, on_delete=models.PROTECT, db_column='id_usuario_ipress') """
     id_red =models.ForeignKey(red, on_delete=models.PROTECT, db_column='id_red')
     turno=models.CharField(max_length=100)
     frecuencia=models.CharField(max_length=100)
     id_vacunacion= models.AutoField(primary_key=True)
+
 
     class Meta:
         db_table = 'rf_vacunaciones'

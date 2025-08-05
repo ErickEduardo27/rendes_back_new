@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from django.db import connection
 from django.http import JsonResponse
+from django.db import IntegrityError
 
 
 class usuarioViewSet(viewsets.ModelViewSet):
@@ -76,7 +77,15 @@ class periodoIpressViewSet(viewsets.ModelViewSet):
 class pacienteViewSet(viewsets.ModelViewSet):
     queryset = pacientes.objects.all()
     serializer_class = pacienteSerializer
-    
+    pagination_class=None
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        estado = self.request.query_params.get('estado')
+        
+        if estado:
+            queryset = queryset.filter(estado=estado)
+
+        return queryset
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -120,20 +129,21 @@ class pacientesDialisisViewSet(viewsets.ModelViewSet):
     queryset = pacientesDialisis.objects.all()
     serializer_class = pacientesDialisisSerializer 
     search_fields = ['=id_paciente']
+    pagination_class=None
     def get_queryset(self):
         queryset = super().get_queryset()
-        id_usuario_ipress = self.request.query_params.get('id_usuario_ipress')
         id_periodo_ipress = self.request.query_params.get('id_periodo_ipress')
         id_paciente = self.request.query_params.get('id_paciente')
 
-        if id_usuario_ipress:
-            queryset = queryset.filter(id_usuario_ipress=id_usuario_ipress)
-        if id_periodo_ipress:
+        if id_periodo_ipress == 'null':
+            queryset = queryset.filter(id_periodo_ipress__isnull=True)
+        elif id_periodo_ipress:
             queryset = queryset.filter(id_periodo_ipress=id_periodo_ipress)
+
         if id_paciente:
             queryset = queryset.filter(id_paciente=id_paciente)
-        return queryset
 
+        return queryset
 
 class CustomLoginView(APIView):
     def post(self, request):
@@ -146,10 +156,8 @@ class CustomLoginView(APIView):
 
 class UsuarioMeView(APIView):
     """ permission_classes = [IsAuthenticated] """
-
     def get(self, request):
         try:
-
             user_autenticado = request.user
             
             serializer = usuarioSerializer(user_autenticado)
@@ -211,9 +219,33 @@ class resultadosClinicosViewSet(viewsets.ModelViewSet):
 
 
 class unidadesActualesViewSet(viewsets.ModelViewSet):
-
     queryset = unidadesActuales.objects.all()
     serializer_class = unidadesActualesSerializer 
+    pagination_class = None  #
+    def get_queryset(self):
+        id_periodo_ipress = self.request.query_params.get('id_periodo_ipress')
+
+        if id_periodo_ipress:
+            return unidadesActuales.objects.filter(
+                id_periodo_ipress=id_periodo_ipress
+            ).order_by('-fecha_creacion_acceso_actual')[:1]
+
+        # Retorna todos si no hay filtro
+        return unidadesActuales.objects.all()
+
+class unidadesActualesPagViewSet(viewsets.ModelViewSet):
+    queryset = unidadesActuales.objects.all()
+    serializer_class = unidadesActualesSerializer 
+    def get_queryset(self):
+        id_periodo_ipress = self.request.query_params.get('id_periodo_ipress')
+
+        if id_periodo_ipress:
+            return unidadesActuales.objects.filter(
+                id_periodo_ipress=id_periodo_ipress
+            ).order_by('-fecha_creacion_acceso_actual')[:1]
+
+        # Retorna todos si no hay filtro
+        return unidadesActuales.objects.all()
 
 class morbilidadesHospitalariasViewSet(viewsets.ModelViewSet):
 
