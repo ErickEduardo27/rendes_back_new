@@ -24,6 +24,11 @@ router.register(r'morbilidadesHospitalarias', viewsAsis.morbilidadesHospitalaria
 router.register(r'eventosAccesosVasculares', viewsAsis.eventosAccesosVascularesViewSet)
 router.register(r'vacunaciones', viewsAsis.vacunacionesViewSet)
 router.register(r'resultadosClinicos', viewsAsis.resultadosClinicosViewSet)
+router.register(r'indexRedes', viewsAsis.indexRedViewSet, basename = 'index_redes_pagitation')
+router.register(r'redes', viewsAsis.redViewSet)
+router.register(r'indexPacientes', viewsAsis.indexPacienteViewSet, basename = 'index_pacientes')
+router.register(r'indexPerfil', viewsAsis.indexPerfilViewSet, basename = 'index_perfiles')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),

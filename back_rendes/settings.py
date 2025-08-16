@@ -53,7 +53,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 13
 }
@@ -79,6 +81,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django_filters',
     'corsheaders',
     'django.contrib.staticfiles',
     'appAsistencial.apps.appAsistencialConfig',
@@ -124,12 +127,12 @@ WSGI_APPLICATION = 'back_rendes.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': os.environ.get('DB'), 
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': 'rendes',
         'USER': 'postgres',
-        'PASSWORD': '3ss4lud2#',
-        'HOST': '192.168.0.92',
-        'PORT': '5432',
+        'PASSWORD': 'Eli-edu4655',
+        'HOST': 'localhost',
+    'PORT': '5433',
     }
 }
 

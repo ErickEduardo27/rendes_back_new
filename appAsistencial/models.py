@@ -2,10 +2,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 class UsuarioManager(BaseUserManager):
-    def create_user(self, usuario, password=None, **extra_fields):
+    def create_user(self, usuario, password, **extra_fields):
         if not usuario:
             raise ValueError('El campo "usuario" es obligatorio para el Custom User.')
-        
+        if not password:
+            raise ValueError('El campo "password" es obligatorio.')
         user = self.model(usuario=usuario, **extra_fields)
         user.set_password(password) 
         user.save(using=self._db) 
@@ -288,6 +289,7 @@ class unidadesActuales(models.Model):
     fecha_creacion_acceso_nuevo=models.CharField(max_length=100, blank=True, null=True)
     tipo_acceso_nuevo=models.CharField(max_length=100, blank=True, null=True)
     localizacion_acceso_nuevo=models.CharField(max_length=100, blank=True, null=True)
+    """ fecha_registro = models.DateTimeField(auto_now_add=True) """  # <-- Campo agregado
     """ id_usuario_ipress=models.ForeignKey(usuarioIpress, on_delete=models.PROTECT, db_column='id_usuario_ipress') """
     """ id_tipo_paciente=models.ForeignKey(tipoPacientes, on_delete=models.PROTECT,db_column='id_tipo_paciente') """
 

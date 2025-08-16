@@ -15,6 +15,69 @@ class usuarioSerializer(serializers.ModelSerializer):
         model = User
         exclude = ['id_perfil', 'password', 'last_login', 'is_superuser', 'groups', 'user_permissions']
 
+class UsuarioCreateSerializer(serializers.ModelSerializer):
+    # Solo para creación; write_only evita que se devuelva en la respuesta
+    password = serializers.CharField(write_only=True, min_length=1, trim_whitespace=False)
+
+    class Meta:
+        model = User
+        # Incluye los campos que necesitas crear (ajusta según tu modelo)
+        fields = [
+            'id_usuario', 'id_perfil', 'documento', 'nombre', 'usuario',
+            'estado', 'is_active', 'password'
+        ]
+        read_only_fields = ['id_usuario', 'is_active']  # 'is_active' si no quieres que lo seteen
+
+    def validate_usuario(self, value):
+        # Normaliza si quieres (por ejemplo, quitar espacios)
+        return value.strip()
+
+    def create(self, validated_data):
+        """
+        Crea el usuario usando el manager para que set_password() hashee.
+        """
+        password = validated_data.pop('password')
+        # Opción A (recomendada): usa el manager
+        user = User.objects.create_user(password=password, **validated_data)
+
+        # Opción B (alternativa): si prefieres, set_password manual
+        # user = User(**validated_data)
+        # user.set_password(password)
+        # user.save()
+
+        return user
+
+
+class UsuarioDetailSerializer(serializers.ModelSerializer):
+    datosPerfil = perfilSerializer(source="id_perfil", read_only=True)
+    class Meta:
+        model = User
+        fields = [
+            'id_usuario', 'id_perfil', 'documento', 'nombre', 'usuario','datosPerfil',
+            'estado', 'is_active', 'is_staff', 'is_superuser', 'last_login'
+        ]
+        read_only_fields = fields  # si no quieres permitir updates con este serializer
+
+
+class UsuarioUpdateSerializer(serializers.ModelSerializer):
+    """
+    Para actualizar datos y (opcionalmente) cambiar password.
+    Si viene 'password', se hashea; si no, se ignora.
+    """
+    password = serializers.CharField(write_only=True, required=False, allow_null=True, allow_blank=True)
+
+    class Meta:
+        model = User
+        fields = ['id_perfil', 'documento', 'nombre', 'usuario', 'estado', 'is_active', 'password']
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        user = super().update(instance, validated_data)
+        if password:
+            user.set_password(password)
+            user.save(update_fields=['password'])
+        return user
+    
 class modalidadesSerializer(serializers.ModelSerializer):
     class Meta:
         model = modalidades
@@ -158,12 +221,14 @@ class morbilidadesHospitalariasSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class vacunacionesSerializer(serializers.ModelSerializer):
+    datosPaciente = pacienteSerializer(source="id_paciente", read_only=True)
     datosRed = redSerializer(source="id_red", read_only=True)
     class Meta:
         model = vacunaciones
         fields = '__all__'
 
 class resultadosClinicosSerializer(serializers.ModelSerializer):
+    datosPaciente = pacienteSerializer(source="id_paciente", read_only=True)
     class Meta:
         model = resultadosClinicos
         fields = '__all__'

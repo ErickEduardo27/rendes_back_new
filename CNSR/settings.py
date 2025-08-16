@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'django.contrib.gis',
+    # 'django.contrib.gis',
     'Asistencial.apps.AsistencialConfig',
     'rest_framework',
     'drf_yasg',
@@ -100,7 +100,7 @@ WSGI_APPLICATION = 'CNSR.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+    'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('DB'), 
         'USER': 'postgres',
         'PASSWORD': '3ss4lud2#',
