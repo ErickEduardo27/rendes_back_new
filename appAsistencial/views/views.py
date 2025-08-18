@@ -188,7 +188,7 @@ class pacientesDialisisViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(id_periodo_ipress=id_periodo_ipress)
 
         if id_paciente:
-            queryset = queryset.filter(id_paciente=id_paciente)
+            queryset = queryset.filter(id_paciente=id_paciente).order_by('-id_paciente_dialisis')
 
         return queryset
 
@@ -253,6 +253,31 @@ def resumen_registros(request, id_ipress=None, id_periodo=None):
 
     return JsonResponse(datos, safe=False)
 
+def reporte_resultados(request, id_ipress=None, id_periodo=None):
+    # Convertir "null" (string) a None
+    if id_ipress == "null" or id_ipress is None:
+        id_ipress_int = None
+    else:
+        try:
+            id_ipress_int = int(id_ipress)
+        except ValueError:
+            return JsonResponse({"error": "ID IPRESS inválido"}, status=400)
+
+    if id_periodo == "null" or id_periodo is None:
+        id_periodo_int = None
+    else:
+        try:
+            id_periodo_int = int(id_periodo)
+        except ValueError:
+            return JsonResponse({"error": "ID PERIODO inválido"}, status=400)
+
+    # Ejecutar función en base de datos
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM rendes_reporte_resultados(%s, %s)", [id_ipress_int, id_periodo_int])
+        print(cursor.fetchall())
+        datos = [fila[0] for fila in cursor.fetchall()]
+
+    return JsonResponse(datos, safe=False)
 
 class vacunacionesViewSet(viewsets.ModelViewSet):
     queryset = vacunaciones.objects.all()

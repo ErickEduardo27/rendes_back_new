@@ -32,6 +32,7 @@ router.register(r'indexPerfil', viewsAsis.indexPerfilViewSet, basename = 'index_
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('reporte_resultados/', viewsAsis.reporte_resultados, name='reporte_resultados'),
     path('resumen_registros/', viewsAsis.resumen_registros, name='resumen_registros_todos'),
     path('resumen_registros/<str:id_ipress>/', viewsAsis.resumen_registros, name='resumen_registros_ipress'),
     path('resumen_registros/<str:id_ipress>/<str:id_periodo>/', viewsAsis.resumen_registros, name='resumen_registros_completo'),
