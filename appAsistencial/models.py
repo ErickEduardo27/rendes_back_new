@@ -403,3 +403,29 @@ class resultadosClinicos (models.Model):
 
     def __str__(self):
         return (self.tiempo_dialisis)
+    
+class PacienteRegistro(models.Model):
+    id_registro_paciente = models.AutoField(primary_key=True)
+    paciente = models.ForeignKey(pacientes, on_delete=models.CASCADE, db_column='paciente_id')
+    ipress = models.ForeignKey(Ipress, on_delete=models.CASCADE, db_column='ipress_id', null=True, blank=True)
+    periodo = models.ForeignKey(Periodos, on_delete=models.CASCADE, db_column='periodo_id')
+    fecha_created = models.DateTimeField(auto_now_add=True)
+    condicion=models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        db_table = 'rf_paciente_registro'
+
+    def __str__(self):
+        return f"{self.paciente} - {self.ipress} - {self.periodo}"
+    
+class Asignacion(models.Model):
+    id_asignacion = models.AutoField(primary_key=True)
+    usuario = models.ForeignKey(usuario, on_delete=models.CASCADE, db_column='usuario_id')
+    ipress = models.ForeignKey(Ipress, on_delete=models.CASCADE, db_column='ipress_id', null=True, blank=True)
+    fecha_created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'rf_asignacion'
+
+    def __str__(self):
+        return f"{self.usuario} - {self.ipress}"
