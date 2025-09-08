@@ -1,4 +1,9 @@
-from appAsistencial.models import perfil,usuario,modalidades,red,Ipress,pacientes,usuarioIpress,etiologia,pacientesDialisis,ubigeo,tipoPacientes,periodoIpress,estados,Periodos,unidadesActuales,morbilidadesHospitalarias,eventosAccesosVasculares,vacunaciones,resultadosClinicos
+from rest_framework import serializers
+from appAsistencial.models import perfil,usuario,modalidades,red,Ipress,pacientes,usuarioIpress,etiologia,pacientesDialisis,ubigeo,tipoPacientes,periodoIpress,estados,Periodos,unidadesActuales,morbilidadesHospitalarias,eventosAccesosVasculares,vacunaciones,resultadosClinicos,PacienteRegistro,Asignacion
+class AsignacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Asignacion
+        fields = ['id_asignacion', 'usuario', 'ipress', 'fecha_created']
 from rest_framework import serializers
 from django.contrib.auth import authenticate, get_user_model
 
@@ -281,3 +286,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         
         user.save() 
         return user
+    
+class PacienteRegistroSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PacienteRegistro
+        fields = ['id_registro_paciente', 'paciente', 'ipress', 'periodo', 'fecha_created','condicion']

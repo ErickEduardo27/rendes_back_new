@@ -1,5 +1,6 @@
-from appAsistencial.models import usuario,perfil,Ipress, usuarioIpress,periodoIpress,pacientes,etiologia,pacientesDialisis,estados,Periodos,unidadesActuales,morbilidadesHospitalarias,eventosAccesosVasculares,vacunaciones,resultadosClinicos,red
-from appAsistencial.serializers.serializers import perfilSerializer,usuarioSerializer,ipressSerializer,usuarioIpressSerializer,periodoIpressSerializer,pacienteSerializer,etiologiaSerializer,pacientesDialisisSerializer, CustomLoginSerializer, UserRegistrationSerializer,periodoSerializer,unidadesActualesSerializer,morbilidadesHospitalariasSerializer,eventosAccesosVascularesSerializer,vacunacionesSerializer,resultadosClinicosSerializer,redSerializer,UsuarioCreateSerializer,UsuarioDetailSerializer,UsuarioUpdateSerializer
+# Al final del archivo (antes de cualquier comentario de cierre o EOF)
+from appAsistencial.models import usuario,perfil,Ipress, usuarioIpress,periodoIpress,pacientes,etiologia,pacientesDialisis,estados,Periodos,unidadesActuales,morbilidadesHospitalarias,eventosAccesosVasculares,vacunaciones,resultadosClinicos,red,PacienteRegistro,Asignacion
+from appAsistencial.serializers.serializers import perfilSerializer,usuarioSerializer,ipressSerializer,usuarioIpressSerializer,periodoIpressSerializer,pacienteSerializer,etiologiaSerializer,pacientesDialisisSerializer, CustomLoginSerializer, UserRegistrationSerializer,periodoSerializer,unidadesActualesSerializer,morbilidadesHospitalariasSerializer,eventosAccesosVascularesSerializer,vacunacionesSerializer,resultadosClinicosSerializer,redSerializer,UsuarioCreateSerializer,UsuarioDetailSerializer,UsuarioUpdateSerializer,PacienteRegistroSerializer,AsignacionSerializer
 from rest_framework import permissions, viewsets, filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -392,3 +393,13 @@ class eventosAccesosVascularesViewSet(viewsets.ModelViewSet):
         if id_periodo_ipress:
             qs = qs.filter(id_periodo_ipress=id_periodo_ipress)
         return qs
+    
+class PacienteRegistroViewSet(viewsets.ModelViewSet):
+    queryset = PacienteRegistro.objects.all()
+    serializer_class = PacienteRegistroSerializer 
+    pagination_class = None
+
+class AsignacionViewSet(viewsets.ModelViewSet):
+    queryset = Asignacion.objects.all()
+    serializer_class = AsignacionSerializer
+    pagination_class = None
