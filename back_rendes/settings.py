@@ -62,6 +62,7 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:5173',
     'http://10.0.54.88:5173',
+    'http://10.0.54.88:8010',
     'http://10.0.54.88',
     'http://10.0.54.88:80',
     'http://10.0.54.105:8080',
