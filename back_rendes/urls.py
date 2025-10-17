@@ -38,10 +38,9 @@ urlpatterns = [
     path('resumen_registros/<str:id_ipress>/<str:id_periodo>/', viewsAsis.resumen_registros, name='resumen_registros_completo'),
     path('api/token/', viewsAsis.CustomLoginView.as_view(), name='token_obtain_pair'),
     path('api/me/', viewsAsis.UsuarioMeView.as_view(), name='me'),
-
     path('api/register/', viewsAsis.UserRegistrationView.as_view(), name='user_register'),
-    
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('consultar-dni/', viewsAsis.consultar_dni, name='consultar_dni'),
     path('', include(router.urls)), 
 ]
     

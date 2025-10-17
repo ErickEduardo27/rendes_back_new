@@ -62,6 +62,7 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:5173',
     'http://10.0.54.88:5173',
+    'http://10.0.54.88:8010',
     'http://10.0.54.88',
     'http://10.0.54.88:80',
     'http://10.0.54.105:8080',
@@ -128,11 +129,11 @@ WSGI_APPLICATION = 'back_rendes.wsgi.application'
 DATABASES = {
     'default': {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'rendes',
+        'NAME': os.environ.get('DB'), 
         'USER': 'postgres',
-        'PASSWORD': 'Eli-edu4655',
-        'HOST': 'localhost',
-    'PORT': '5433',
+        'PASSWORD': '3ss4lud2#',
+        'HOST': '192.168.0.92',
+        'PORT': '5432',
     }
 }
 
