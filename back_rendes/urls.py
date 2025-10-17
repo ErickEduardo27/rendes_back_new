@@ -27,9 +27,7 @@ router.register(r'resultadosClinicos', viewsAsis.resultadosClinicosViewSet)
 router.register(r'indexRedes', viewsAsis.indexRedViewSet, basename = 'index_redes_pagitation')
 router.register(r'redes', viewsAsis.redViewSet)
 router.register(r'indexPacientes', viewsAsis.indexPacienteViewSet, basename = 'index_pacientes')
-
 router.register(r'PacienteRegistro', viewsAsis.PacienteRegistroViewSet, basename = 'paciente_registro')
-router.register(r'asignaciones', viewsAsis.AsignacionViewSet, basename='asignaciones')
 
 
 urlpatterns = [
