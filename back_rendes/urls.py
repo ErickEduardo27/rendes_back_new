@@ -45,4 +45,3 @@ urlpatterns = [
     path('consultar-dni/', viewsAsis.consultar_dni, name='consultar_dni'),
     path('', include(router.urls)), 
 ]
-    
