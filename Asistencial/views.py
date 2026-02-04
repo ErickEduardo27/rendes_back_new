@@ -1743,3 +1743,30 @@ class estadosViewSet(viewsets.ModelViewSet):
     queryset = estados.objects.all()
     serializer_class = estadosSerializer
     search_fields = ['=estado']
+
+    
+def consultar_dni(request):
+    """
+    Consulta el DNI en el API externo de RENIEC
+    """
+    numero_dni = request.GET.get('numero')
+    if not numero_dni:
+        return JsonResponse({'error': 'Número de DNI no proporcionado'}, status=400)
+
+    try:
+        # Llamada al API externo
+        url = f"https://api.apis.net.pe/v2/reniec/dni?numero={numero_dni}"
+        headers = {
+            "Authorization": "Bearer apis-token-13227.EZwhdL4nu5JksFBEwIxSl3D49lVEmwtP",
+            "Accept": "application/json"
+        }
+        response = requests.get(url, headers=headers)
+
+        # Si el API externo responde
+        if response.status_code == 200:
+            return JsonResponse(response.json())
+        else:
+            return JsonResponse({'error': 'Error al consultar el API externo'}, status=response.status_code)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

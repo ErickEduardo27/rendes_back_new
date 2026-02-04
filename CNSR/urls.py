@@ -71,6 +71,7 @@ urlpatterns = [
     path('reporte_resultados_clinicos/', viewsAsis.reporte_resultados_clinicos),
     path('reporte_calidad_microbiologicas/', viewsAsis.reporte_calidad_microbiologicas),
     path('reporte_vacunaciones/', viewsAsis.reporte_vacunaciones),
+    path('consultar-dni/', viewsAsis.consultar_dni, name='consultar_dni'),
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
