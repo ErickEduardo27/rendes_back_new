@@ -56,7 +56,6 @@ urlpatterns = [
     path('reporte_inicio/', viewsAsis.reporte_inicio),
     path('consulta_periodo/', viewsAsis.consulta_periodo),
     path('consulta_periodo_ipress/', viewsAsis.consulta_periodo_ipress),
-    path('consulta_periodo_ipress/', viewsAsis.consulta_periodo_ipress),
     path('pre_carga_f1/', pre_carga_f1),
     path('consulta_ipress/', viewsAsis.consulta_ipress),
     path('consulta_precarga/', viewsAsis.consulta_precarga),
